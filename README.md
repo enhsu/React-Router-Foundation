@@ -1,70 +1,67 @@
-# Getting Started with Create React App
+# React Router Foundation
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## References
 
-## Available Scripts
+- [Default create-react-app README.md](./create-react-app-readme.md)
+- [React Router Tutorial](https://reactrouter.com/docs/en/v6/getting-started/tutorial)
+- [React Router API Reference](https://reactrouter.com/docs/en/v6/api)
 
-In the project directory, you can run:
+## Environment Setting
 
-### `npm start`
+```sh
+# create create app
+$ npx create-react-app <project-name>
+# install react-router-dom version 6
+$ npm i react-router-dom@6
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Configuring Routes
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Foundation
+1. Use `BrowserRouter` component wraps the `App component` in [index.js](./src/index.js)
+2. Building `Routes & Route` structure in [App.js](./src/App.js)
+3. Navigatioin
+    - [see navlink detail see here](./notes/navlink.md)
+    - [navigating programmatically see here](./notes/navigating-programmatically.md)
+4. Handle `no match routes` in [App.js](./src/App.js)
+    - `<Route path="*" element={<NoMatch />} />`
+5. Nested routing
+    - `<Outlet>` - An `<Outlet>` should be used in parent route elements to render their child route elements. Outle demo see [NestedRoute/index.js](./src/pages/NestedRoute/index.js)
+    - If the parent route matched exactly, it will render a `child index route`, e.g. `<Route index element={<IndexCompponent />}>`, or nothing if there is no index route. Route index demo see [App.js](./src/App.js)
 
-### `npm test`
+### Advanced - Dynamic Routes
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Handle dynamic routing: `<Route path="/page/:id" />`. dynamic routing demo see [App.js](./src/App.js)
+- Get URL parameters: `useParams()`
+    - [Reference - userParams](https://reactrouter.com/docs/en/v6/api#useparams)
+    - userParams() demo see [Users/UsersDetail.js](./src/pages/Users/UsersDetail.js)
+- Get & Set search parameters: `useSearchParams()`
+    - [Reference - useSearchParams](https://reactrouter.com/docs/en/v6/api#usesearchparams)
+    - userSearchParams() demo see [Users/index.js](./src/pages/Users/index.js)
 
-### `npm run build`
+### Advanced - Lazy Loading
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Using this technique, pages that are not required on the home page can be split out into separate bundles, thereby decreasing load time on the initial page and `improving performance`.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- import: `const LazyComponent = React.lazy(() => import('/component/path'))`
+- Usage: `<Route path="path" element={<React.Suspense fallback="Loading..."><LazyComponent /></React.Suspense>} />` 
+- demo see [App.js](./src/App.js)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Advanced - Authentication & Protected Routes
+![authenticatioin scenario](./assets/authentication-scenario.png)
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Steps
+1. Create [auth.js](./src/auth/index.js), createContext for global variable
+2. Wrap all App with AuthProvider in [index.js](./src/index.js)
+3. Create [Login Page](./src/pages/Login.js), handle user login
+    - NOTE: set `replace: true` before navigating
+    - Reason: Normally a call to navigate will push a new entry into the history stack so the user can click the back button to get back to the page. If you pass replace: true to navigate then the current entry in the history stack will be replaced with the new one.
+    - Advanced - `useLocation`, redirect to the path which the value is from [RequireAuth.js](./src/components/RequireAuth.js)
+4. Create [Profile Page](./src/pages/Profile.js), handle user logout
+5. Edit [App.js](./src/App.js), adding the route
+6. Edit [Navbar.js](./src/components/Navbar.js)
+    - user not login -> show `Login`
+7. Advanced - Create reuseable wrap component [RequireAuth.js](./src/components/RequireAuth.js), for checking user is login
+    - the component will render first
+    - if user is login -> render children component
+    - if user is NOT login -> redirect to login page
