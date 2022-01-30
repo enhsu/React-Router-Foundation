@@ -21,6 +21,8 @@ $ npm i react-router-dom@6
 1. Use `BrowserRouter` component wraps the `App component` in [index.js](./src/index.js)
 2. Building `Routes & Route` structure in [App.js](./src/App.js)
 3. Navigatioin
+    - About path
+        If the to path starts with `"/"`, then it's an `absolute path`, otherwise a `relative path`
     - [see navlink detail see here](./notes/navlink.md)
     - [navigating programmatically see here](./notes/navigating-programmatically.md)
 4. Handle `no match routes` in [App.js](./src/App.js)
